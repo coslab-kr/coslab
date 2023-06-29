@@ -18,7 +18,7 @@ fi
 cd llvm
 if [ ! -d "llvm" ]; then
   echo "Cloning LLVM repository"
-  git clone https://github.com/coslab-kr/llvm-project.git llvm -b llvmorg-$LLVM_VERSION --depth 1
+  git clone git@github.com:coslab-kr/llvm-project.git llvm -b llvmorg-$LLVM_VERSION --depth 1
 fi
 
 if [ ! -d "llvm-objects" ]; then
