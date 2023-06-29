@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+LLVM_VERSION='16.0.0'
+
+COS_REPO='https://github.com/coslab-kr/coslab.git'
+CUR_REPO=$(git config --get remote.origin.url)
+
+if [ -z "$CUR_REPO" ] || [ "$CUR_REPO" != "$COS_REPO" ]; then
+  echo "[Error] Run the configure script in the coslab repository"
+  exit 0
+fi
+
+if [ ! -d "llvm" ]; then
+  echo "Creating the llvm directory"
+  mkdir llvm
+fi
+
+cd llvm
+if [ ! -d "llvm" ]; then
+  echo "Cloning LLVM repository"
+  git clone https://github.com/coslab-kr/llvm-project.git llvm -b llvmorg-$LLVM_VERSION --depth 1
+fi
+
+if [ ! -d "llvm-objects" ]; then
+  echo "Creating the llvm-objects directory"
+  mkdir llvm-objects
+fi
+
+if [ ! -d "llvm-install" ]; then
+  echo "Creating the llvm-install directory"
+  mkdir llvm-install
+fi
+
+if [ ! -f "llvm-objects/Makefile" ]; then
+  cmake -S llvm/llvm -B llvm-objects -G 'Unix Makefiles' \
+    -DLLVM_ENABLE_PROJECTS='clang;clang-tools-extra;lld;polly' \
+    -DCMAKE_BUILD_TYPE='Debug' \
+    -DCMAKE_INSTALL_PREFIX='$(pwd)/llvm-install'
+fi
+  
+if [ ! -f "llvm-objects/bin/clang" ]; then
+  cmake --build llvm-objects
+fi
+
+if [ ! -f "llvm-install/bin/clang" ]; then
+  cd llvm-objects && make install
+fi
+
+START_TAG="# >>> coslab initialize >>>"
+EXPORT_CMD="export PATH=\$PATH:$(pwd)/llvm-install/bin"
+END_TAG="# <<< coslab initialize <<<"
+
+if [ $(grep -ic "${START_TAG}" ~/.bashrc) -ne 0 ]; then
+  sed -i /"${START_TAG}"/,/"${END_TAG}"/d ~/.bashrc
+fi
+
+echo -e "${START_TAG}\n${EXPORT_CMD}\n${END_TAG}" >> ~/.bashrc
