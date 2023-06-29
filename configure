@@ -2,7 +2,7 @@
 
 LLVM_VERSION='16.0.0'
 
-COS_REPO='https://github.com/coslab-kr/coslab.git'
+COS_REPO='git@github.com:coslab-kr/coslab.git'
 CUR_REPO=$(git config --get remote.origin.url)
 
 if [ -z "$CUR_REPO" ] || [ "$CUR_REPO" != "$COS_REPO" ]; then
