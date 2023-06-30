@@ -33,7 +33,7 @@ fi
 
 if [ ! -f "llvm-objects/Makefile" ]; then
   cmake -S llvm/llvm -B llvm-objects -G 'Unix Makefiles' \
-    -DLLVM_ENABLE_PROJECTS='clang;clang-tools-extra;lld;polly' \
+    -DLLVM_ENABLE_PROJECTS='clang;clang-tools-extra;lld;polly;mlir' \
     -DCMAKE_BUILD_TYPE='Debug' \
     -DCMAKE_INSTALL_PREFIX='$(pwd)/llvm-install'
 fi
