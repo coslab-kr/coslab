@@ -5,6 +5,8 @@ LLVM_VERSION='16.0.0'
 COS_REPO='git@github.com:coslab-kr/coslab.git'
 CUR_REPO=$(git config --get remote.origin.url)
 
+CUR_DIR=$(pwd)
+
 if [ -z "$CUR_REPO" ] || [ "$CUR_REPO" != "$COS_REPO" ]; then
   echo "[Error] Run the configure script in the coslab repository"
   exit 0
@@ -34,8 +36,8 @@ fi
 if [ ! -f "llvm-objects/Makefile" ]; then
   cmake -S llvm/llvm -B llvm-objects -G 'Unix Makefiles' \
     -DLLVM_ENABLE_PROJECTS='clang;clang-tools-extra;lld;polly;mlir' \
-    -DCMAKE_BUILD_TYPE='Debug' \
-    -DCMAKE_INSTALL_PREFIX='$(pwd)/llvm-install'
+    -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_INSTALL_PREFIX=${CUR_DIR}/llvm/llvm-install
 fi
   
 if [ ! -f "llvm-objects/bin/clang" ]; then
@@ -47,7 +49,7 @@ if [ ! -f "llvm-install/bin/clang" ]; then
 fi
 
 START_TAG="# >>> coslab initialize >>>"
-EXPORT_CMD="export PATH=\$PATH:$(pwd)/llvm-install/bin"
+EXPORT_CMD="export PATH=\$PATH:${CUR_DIR}/llvm/llvm-install/bin"
 END_TAG="# <<< coslab initialize <<<"
 
 if [ $(grep -ic "${START_TAG}" ~/.bashrc) -ne 0 ]; then
