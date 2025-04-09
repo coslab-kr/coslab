@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-LLVM_VERSION='16.0.0'
+LLVM_VERSION='18.1.0'
 
 COS_REPO='git@github.com:coslab-kr/coslab.git'
 CUR_REPO=$(git config --get remote.origin.url)
@@ -37,7 +37,9 @@ if [ ! -f "llvm-objects/Makefile" ]; then
   cmake -S llvm/llvm -B llvm-objects -G 'Unix Makefiles' \
     -DLLVM_ENABLE_PROJECTS='clang;clang-tools-extra;lld;polly;mlir' \
     -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_INSTALL_PREFIX=${CUR_DIR}/llvm/llvm-install
+    -DCMAKE_INSTALL_PREFIX=${CUR_DIR}/llvm/llvm-install \
+    -DLLVM_INSTALL_UTILS=ON \
+    -DLLVM_TARGETS_TO_BUILD='X86;ARM;Sparc;AVR;MSP430'
 fi
   
 if [ ! -f "llvm-objects/bin/clang" ]; then
